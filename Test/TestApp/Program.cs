@@ -18,7 +18,12 @@ namespace TestApp
             
             var services = new ServiceCollection()
                 .AddSingleton<IConfiguration>(config)
-                .AddDbContext<GamesContext>(options => options.UseSqlServer("Name=Games"))
+                .AddDbContext<GamesContext>(options => 
+                    options
+                        // Be warned, this requires multiple active result sets on connection string!
+                        // Probably better to .Include the dependent tables...
+                        .UseLazyLoadingProxies() 
+                        .UseSqlServer("Name=Games"))
                 .BuildServiceProvider();
             
             var gamesContext = services.GetService<GamesContext>();
@@ -30,9 +35,17 @@ namespace TestApp
             //     new Game { Name = "Super Mario Galaxy" }
             // });
             // await gamesContext.SaveChangesAsync();
-            
-            var games = gamesContext.Games.ToList();
-            Console.ReadKey();
+
+            await gamesContext
+                .Games
+                .Where(g => g.Name.Contains("Galaxy"))
+                // .Include(g => g.GamesSystems)
+                // .ThenInclude(gs => gs.GamesSystemsReleases)
+                .ForEachAsync(g =>
+                {
+                    Console.WriteLine(g.Name);
+                    Console.WriteLine(g.GamesSystems.FirstOrDefault()?.System.Name);
+                });
         }
     }
 }
