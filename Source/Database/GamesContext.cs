@@ -12,7 +12,7 @@ namespace Database
         public DbSet<Game> Games { get; set; }
         public DbSet<System> Systems { get; set; }
         public DbSet<GameSystem> GamesSystems { get; set; }
-        public DbSet<GameSystemRelease> GamesSystemReleases { get; set; }
+        public DbSet<GameSystemRelease> GamesSystemsReleases { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
