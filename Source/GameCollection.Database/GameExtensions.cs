@@ -1,7 +1,8 @@
 using System.Linq;
+using GameCollection.Database.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Database
+namespace GameCollection.Database
 {
     public static class GameExtensions
     {

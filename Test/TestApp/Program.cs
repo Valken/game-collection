@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Database;
+using GameCollection.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,6 +9,10 @@ using Microsoft.Extensions.Logging;
 
 namespace TestApp
 {
+    class GameyGame
+    {
+        public string Title { get; set; }
+    }
     class Program
     {
         public static readonly ILoggerFactory LogFactory = LoggerFactory.Create(builder => builder.AddDebug());
@@ -83,19 +87,29 @@ namespace TestApp
                 Console.WriteLine($"{game.Title} {string.Join(", ", game.System.Select(s => s.Name))}");
             }
 
-            var marioOdyssey = gamesContext
+
+            var stuff = gamesContext
                 .Games
-                .WithRelatedData()
-                .Single(g => g.Name.Contains("Odyssey"));
-            marioOdyssey
-                .GamesSystems
-                .First()
-                .GamesSystemsReleases
-                .Add(new GameSystemRelease
-                {
-                    ReleaseDate = new DateTime(2017, 10, 27)
-                });
-            await gamesContext.SaveChangesAsync();
+                .Where(g => g.Name == "Super Mario Odyssey")
+                .Select(g => new GameyGame {Title = g.Name})
+                .First();
+
+            stuff.Title = "blah";
+            gamesContext.SaveChanges();
+
+            // var marioOdyssey = gamesContext
+            //     .Games
+            //     .WithRelatedData()
+            //     .Single(g => g.Name.Contains("Odyssey"));
+            // marioOdyssey
+            //     .GamesSystems
+            //     .First()
+            //     .GamesSystemsReleases
+            //     .Add(new GameSystemRelease
+            //     {
+            //         ReleaseDate = new DateTime(2017, 10, 27)
+            //     });
+            // await gamesContext.SaveChangesAsync();
 
             // var newGame = new Game {Name = "Super Mario Odyssey"};
             // newGame.GamesSystems.Add(new GameSystem

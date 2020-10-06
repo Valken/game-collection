@@ -1,7 +1,7 @@
-﻿using System;
+﻿using GameCollection.Database.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Database
+namespace GameCollection.Database
 {
     public class GamesContext : DbContext
     {
@@ -10,7 +10,7 @@ namespace Database
         }
         
         public DbSet<Game> Games { get; set; }
-        public DbSet<System> Systems { get; set; }
+        public DbSet<Models.System> Systems { get; set; }
         public DbSet<GameSystem> GamesSystems { get; set; }
         public DbSet<GameSystemRelease> GamesSystemsReleases { get; set; }
         //

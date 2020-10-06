@@ -1,6 +1,6 @@
 using System;
 
-namespace Database
+namespace GameCollection.Database.Models
 {
     public class GameSystemRelease
     {

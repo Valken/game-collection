@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Database
+namespace GameCollection.Database.Models
 {
     public class Game
     {
