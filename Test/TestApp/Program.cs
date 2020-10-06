@@ -42,18 +42,23 @@ namespace TestApp
 
             await gamesContext
                 .Games
+                .WithRelatedData()
                 .Where(g => g.Name.Contains("Galaxy"))
-                .Include(g => g.GamesSystems)
-                .ThenInclude(gs => gs.System)
-                .Include(g => g.GamesSystems)
-                .ThenInclude(gs => gs.GamesSystemsReleases)
                 .ForEachAsync(g =>
                 {
                     Console.WriteLine(g.Name);
                     Console.WriteLine(g.GamesSystems.FirstOrDefault()?.System.Name);
                 });
 
-
+            var gamecubeGames = gamesContext
+                .Games
+                .WithRelatedData()
+                .Where(g => 
+                    g.GamesSystems
+                        .Any(gs => 
+                            gs.System.Name.Contains("Gamecube")))
+                .ToArray();
+            
             var moreGames = gamesContext
                 .Games
                 .Select(g =>
@@ -62,7 +67,7 @@ namespace TestApp
                         Title = g.Name,
                         System = g.GamesSystems.Select(gs => new 
                         {
-                            System = gs.System.Name, 
+                            Name = gs.System.Name, 
                             Region = gs.GamesSystemsReleases.Select(gsr => new 
                             {
                                 gsr.Region,
@@ -70,8 +75,37 @@ namespace TestApp
                             })
                         })
                     });
+            
             var aGame = moreGames.ToArray();
-            Console.WriteLine($"{aGame[0].Title} {aGame[0].System}");
+            string.Join(", ", aGame[0].System.Select(s => s.Name));
+            foreach (var game in aGame)
+            {
+                Console.WriteLine($"{game.Title} {string.Join(", ", game.System.Select(s => s.Name))}");
+            }
+
+            var marioOdyssey = gamesContext
+                .Games
+                .WithRelatedData()
+                .Single(g => g.Name.Contains("Odyssey"));
+            marioOdyssey
+                .GamesSystems
+                .First()
+                .GamesSystemsReleases
+                .Add(new GameSystemRelease
+                {
+                    ReleaseDate = new DateTime(2017, 10, 27)
+                });
+            await gamesContext.SaveChangesAsync();
+
+            // var newGame = new Game {Name = "Super Mario Odyssey"};
+            // newGame.GamesSystems.Add(new GameSystem
+            // {
+            //     System = gamesContext.Systems.Single(s => s.Name.Contains("Switch"))
+            // });
+            // gamesContext.Add(newGame);
+            // await gamesContext.SaveChangesAsync();
+
+
         }
     }
 }
