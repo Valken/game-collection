@@ -3,6 +3,7 @@ using GameCollection.Database;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace GameCollection.WebApi.Tests
 {
@@ -14,6 +15,11 @@ namespace GameCollection.WebApi.Tests
             {
                 var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<GamesContext>));
                 services.Remove(descriptor);
+                
+                services.AddDbContext<GamesContext>(options =>
+                {
+                    options.UseInMemoryDatabase("Games");
+                });
             });
         }
     }
