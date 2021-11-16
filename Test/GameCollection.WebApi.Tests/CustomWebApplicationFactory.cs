@@ -7,6 +7,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace GameCollection.WebApi.Tests
 {
+    
+    
     public class CustomWebApplicationFactory<TStartup> : WebApplicationFactory<TStartup> where TStartup: class
     {
         protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -19,6 +21,7 @@ namespace GameCollection.WebApi.Tests
                 services.AddDbContext<GamesContext>(options =>
                 {
                     options.UseInMemoryDatabase("Games");
+                    options.EnableSensitiveDataLogging();
                 });
             });
         }

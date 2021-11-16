@@ -1,7 +1,11 @@
+using System;
+using System.Threading.Tasks;
 using GameCollection.Database;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -45,7 +49,7 @@ namespace GameCollection.WebApi
             app.UseAuthorization();
             app.UseEndpoints(endpoints => endpoints.MapControllers());
         }
-        
+
         private void SetSqlParamVisibility(DbContextOptionsBuilder options)
         {
             if (Environment.IsDevelopment())

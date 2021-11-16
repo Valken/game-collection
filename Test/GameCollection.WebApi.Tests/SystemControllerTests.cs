@@ -2,8 +2,10 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
+using GameCollection.Database;
 using Xunit;
 using Xunit.Abstractions;
+using System = GameCollection.Database.Models.System;
 
 namespace GameCollection.WebApi.Tests
 {
@@ -23,6 +25,11 @@ namespace GameCollection.WebApi.Tests
         [Fact]
         public async Task Get_Systems()
         {
+            
+            var context = (GamesContext)_factory.Services.GetService(typeof(GamesContext));
+            context.Systems.Add(new Database.Models.System {Name = "Nintendo Entertainment System"});
+            context.SaveChanges();
+            
             var result = await _client.GetAsync("/system");
             if (!result.IsSuccessStatusCode)
             {
