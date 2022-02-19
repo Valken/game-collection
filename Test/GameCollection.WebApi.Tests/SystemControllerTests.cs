@@ -2,8 +2,11 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
+using GameCollection.Database;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 using Xunit.Abstractions;
+using System = GameCollection.Database.Models.System;
 
 namespace GameCollection.WebApi.Tests
 {
@@ -16,6 +19,16 @@ namespace GameCollection.WebApi.Tests
         public SystemControllerTests(CustomWebApplicationFactory<Startup> factory, ITestOutputHelper outputHelper)
         {
             _factory = factory;
+            var scopeFactory = _factory.Services.GetRequiredService<IServiceScopeFactory>();
+            using (var scope = scopeFactory.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<GamesContext>();
+                if (db.Database.EnsureCreated())
+                {
+                    db.Systems.Add(new Database.Models.System { Name = "Something" });
+                    db.SaveChanges();
+                }
+            }
             _client = _factory.CreateClient();
             _outputHelper = outputHelper;
         }
