@@ -1,0 +1,12 @@
+version: 0.2
+
+phases:
+  build:
+    commands:
+      - dotnet build
+      - dotnet test
+      - dotnet publish -c Release -o release Source/GameCollection.WebApi
+artifacts:
+  base-directory: release
+  files:
+    - '**/*'
