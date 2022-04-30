@@ -23,4 +23,20 @@ namespace GameCollection.WebApi.Tests
             });
         }
     }
+
+    public static class CustomWebApplicationFactoryExtensions
+    {
+        public static void SeedDatabase(this CustomWebApplicationFactory<Startup> factory)
+        {
+            var scopeFactory = factory.Services.GetRequiredService<IServiceScopeFactory>();
+            using (var scope = scopeFactory.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<GamesContext>();
+                if (db.Database.EnsureCreated())
+                {
+                    SeedData.Initialise(db);
+                }
+            }
+        }
+    }
 }
